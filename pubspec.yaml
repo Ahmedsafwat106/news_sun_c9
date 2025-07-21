@@ -1,0 +1,34 @@
+name: news_sun_c9
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  http: ^1.4.0
+  cached_network_image: ^3.4.1
+  google_fonts: ^6.1.0
+  webview_flutter: ^4.13.0
+  url_launcher: ^6.3.2
+  flutter_bloc: ^8.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/sports.jpg
+    - assets/politics.jpg
+    - assets/health.jpg
+    - assets/business.jpg
+    - assets/environment.jpg
+    - assets/science.jpg

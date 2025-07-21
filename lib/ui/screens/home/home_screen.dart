@@ -84,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
                 setState(() {});
               }),
+              const SizedBox(height: 16),
               buildDrawerRow(Icons.settings, "Settings", () {
                 currentTab = const SettingsTab();
                 Navigator.pop(context);

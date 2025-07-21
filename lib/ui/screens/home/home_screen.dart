@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_sun_c9/cubits/sources_cubit/sources_cubit.dart';
+import 'package:news_sun_c9/cubits/search_cubit/search_cubit.dart';
+import 'package:news_sun_c9/cubits/search_cubit/search_state.dart';
 import 'package:news_sun_c9/data/api/api_manager.dart';
 import 'package:news_sun_c9/data/model/ArticlesResponse.dart';
 import 'package:news_sun_c9/data/model/SourcesResponse.dart';
@@ -6,9 +10,9 @@ import 'package:news_sun_c9/data/model/category_dm.dart';
 import 'package:news_sun_c9/ui/screens/home/tabs/categories/categories_tab.dart';
 import 'package:news_sun_c9/ui/screens/home/tabs/news/news_tab.dart';
 import 'package:news_sun_c9/ui/screens/home/tabs/settings/settings_tab.dart';
-import 'package:news_sun_c9/ui/widgets/loading_widget.dart';
-import 'package:news_sun_c9/ui/widgets/error_view.dart';
 import 'package:news_sun_c9/ui/widgets/article_widget.dart';
+import 'package:news_sun_c9/ui/widgets/error_view.dart';
+import 'package:news_sun_c9/ui/widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = " ";
@@ -73,11 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const DrawerHeader(
                 decoration: BoxDecoration(color: Colors.blue),
-                child: Center(
-                    child: Text(
-                      "New App!",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                child: Center(child: Text("New App!")),
               ),
               buildDrawerRow(Icons.list, "Categories", () {
                 currentTab = CategoriesTab(onCategoryClick: onCategoryClick);
@@ -101,8 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
       List<Source> sources = await ApiManager.getSources(categoryDm.id);
       if (sources.isNotEmpty) {
         currentSourceId = sources[0].id ?? "";
-        currentTab = NewsTab(
-            sourceId: currentSourceId, categoryId: categoryDm.id);
+        currentTab = BlocProvider(
+          create: (_) => SourcesCubit()..loadSources(categoryDm.id),
+          child: NewsTab(sourceId: currentSourceId, categoryId: categoryDm.id),
+        );
         setState(() {});
       }
     } catch (e) {
@@ -114,18 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildDrawerRow(IconData iconData, String title, Function onClick) {
     return InkWell(
-      onTap: () {
-        onClick();
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Icon(iconData),
-            const SizedBox(width: 8),
-            Text(title),
-          ],
-        ),
+      onTap: () => onClick(),
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          Icon(iconData),
+          const SizedBox(width: 4),
+          Text(title),
+        ],
       ),
     );
   }
@@ -137,57 +135,35 @@ class NewsDelegate extends SearchDelegate {
   NewsDelegate({required this.sourceId});
 
   @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [];
-  }
+  List<Widget>? buildActions(BuildContext context) => [];
 
   @override
-  ThemeData appBarTheme(BuildContext context) {
-    final theme = Theme.of(context);
-    return theme.copyWith(
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(22),
-          ),
-        ),
-      ),
-      textTheme: const TextTheme(
-        titleLarge: TextStyle(color: Colors.white),
-      ),
-      inputDecorationTheme: const InputDecorationTheme(
-        hintStyle: TextStyle(color: Colors.white),
-      ),
-    );
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () => close(context, null),
-    );
-  }
+  Widget? buildLeading(BuildContext context) => IconButton(
+    icon: const Icon(Icons.arrow_back),
+    onPressed: () => close(context, null),
+  );
 
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder<List<Article>>(
-      future: ApiManager.getArticles(sourceId),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return ArticleWidget(article: snapshot.data![index]);
-            },
-          );
-        } else if (snapshot.hasError) {
-          return ErrorView(message: snapshot.error.toString());
-        } else {
-          return const LoadingWidget();
-        }
-      },
+    return BlocProvider(
+      create: (_) => SearchCubit()..search(sourceId),
+      child: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          if (state is SearchLoading) {
+            return const LoadingWidget();
+          } else if (state is SearchSuccess) {
+            return ListView.builder(
+              itemCount: state.articles.length,
+              itemBuilder: (context, index) =>
+                  ArticleWidget(article: state.articles[index]),
+            );
+          } else if (state is SearchError) {
+            return ErrorView(message: state.error);
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 

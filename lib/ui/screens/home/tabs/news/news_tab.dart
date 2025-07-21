@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:news_sun_c9/data/api/api_manager.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_sun_c9/cubits/sources_cubit/sources_cubit.dart';
+import 'package:news_sun_c9/cubits/sources_cubit/sources_state.dart';
 import 'package:news_sun_c9/data/model/SourcesResponse.dart';
 import 'news_list/news_list.dart';
 
@@ -15,31 +17,33 @@ class NewsTab extends StatefulWidget {
 
 class _NewsTabState extends State<NewsTab> {
   int currentTabIndex = 0;
-  List<Source> sources = [];
 
   @override
   void initState() {
     super.initState();
-    loadSources();
-  }
-
-  void loadSources() async {
-    try {
-      sources = await ApiManager.getSources(widget.categoryId);
-      setState(() {});
-    } catch (e) {
-      // handle error if needed
-    }
+    context.read<SourcesCubit>().loadSources(widget.categoryId);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (sources.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return BlocBuilder<SourcesCubit, SourcesState>(
+      builder: (context, state) {
+        if (state is SourcesLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is SourcesError) {
+          return Center(child: Text(state.error));
+        } else if (state is SourcesSuccess) {
+          return buildTabs(state.sources);
+        } else {
+          return const SizedBox();
+        }
+      },
+    );
+  }
 
+  Widget buildTabs(List<Source> list) {
     return DefaultTabController(
-      length: sources.length,
+      length: list.length,
       child: Column(
         children: [
           const SizedBox(height: 8),
@@ -50,16 +54,14 @@ class _NewsTabState extends State<NewsTab> {
               currentTabIndex = index;
               setState(() {});
             },
-            tabs: sources.map((source) {
-              int index = sources.indexOf(source);
+            tabs: list.map((source) {
+              int index = list.indexOf(source);
               return buildTabWidget(source.name ?? "", currentTabIndex == index);
             }).toList(),
           ),
           Expanded(
             child: TabBarView(
-              children: sources
-                  .map((source) => NewsList(sourceId: source.id ?? ""))
-                  .toList(),
+              children: list.map((source) => NewsList(sourceId: source.id!)).toList(),
             ),
           ),
         ],

@@ -26,6 +26,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Widget currentTab;
   String currentSourceId = "";
+  bool isNewsTabActive = false;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: () {
         if (currentTab is! CategoriesTab) {
           currentTab = CategoriesTab(onCategoryClick: onCategoryClick);
+          isNewsTabActive = false;
           setState(() {});
           return Future.value(false);
         } else {
@@ -54,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               bottom: Radius.circular(22),
             ),
           ),
-          actions: currentTab is NewsTab && currentSourceId.isNotEmpty
+          actions: isNewsTabActive && currentSourceId.isNotEmpty
               ? [
             IconButton(
               onPressed: () {
@@ -76,17 +78,19 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
+                decoration: BoxDecoration(color: Color(0xFF436EA0)),
                 child: Center(child: Text("New App!")),
               ),
               buildDrawerRow(Icons.list, "Categories", () {
                 currentTab = CategoriesTab(onCategoryClick: onCategoryClick);
+                isNewsTabActive = false;
                 Navigator.pop(context);
                 setState(() {});
               }),
               const SizedBox(height: 16),
               buildDrawerRow(Icons.settings, "Settings", () {
                 currentTab = const SettingsTab();
+                isNewsTabActive = false;
                 Navigator.pop(context);
                 setState(() {});
               }),
@@ -102,6 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
       List<Source> sources = await ApiManager.getSources(categoryDm.id);
       if (sources.isNotEmpty) {
         currentSourceId = sources[0].id ?? "";
+        isNewsTabActive = true;
         currentTab = BlocProvider(
           create: (_) => SourcesCubit()..loadSources(categoryDm.id),
           child: NewsTab(sourceId: currentSourceId, categoryId: categoryDm.id),
@@ -169,7 +174,5 @@ class NewsDelegate extends SearchDelegate {
   }
 
   @override
-  Widget buildSuggestions(BuildContext context) {
-    return const SizedBox();
-  }
+  Widget buildSuggestions(BuildContext context) => const SizedBox();
 }

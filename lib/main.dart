@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFFF3F6F9),
-        primaryColor: const Color(0xFF1565C0),
+        primaryColor: const Color(0xFF4F1A7E),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1565C0),
+          backgroundColor: Color(0xFF436EA0),
           centerTitle: true,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(22)),

@@ -29,9 +29,9 @@ class _NewsTabState extends State<NewsTab> {
     return BlocBuilder<SourcesCubit, SourcesState>(
       builder: (context, state) {
         if (state is SourcesLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator(color: Color(0xFF1565C0)));
         } else if (state is SourcesError) {
-          return Center(child: Text(state.error));
+          return Center(child: Text(state.error, style: const TextStyle(color: Color(0xFFE53935))));
         } else if (state is SourcesSuccess) {
           return buildTabs(state.sources);
         } else {
@@ -61,7 +61,9 @@ class _NewsTabState extends State<NewsTab> {
           ),
           Expanded(
             child: TabBarView(
-              children: list.map((source) => NewsList(sourceId: source.id!)).toList(),
+              children: list
+                  .map((source) => NewsList(sourceId: source.id!))
+                  .toList(),
             ),
           ),
         ],
@@ -73,13 +75,13 @@ class _NewsTabState extends State<NewsTab> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: isSelected ? Colors.blue : Colors.white,
+        color: isSelected ? const Color(0xFF1565C0) : Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: Colors.blue),
+        border: Border.all(color: const Color(0xFF1565C0)),
       ),
       child: Text(
         name,
-        style: TextStyle(color: isSelected ? Colors.white : Colors.blue),
+        style: TextStyle(color: isSelected ? Colors.white : const Color(0xFF1565C0)),
       ),
     );
   }

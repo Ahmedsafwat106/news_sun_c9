@@ -18,15 +18,29 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF3F6F9),
-        primaryColor: const Color(0xFF4F1A7E),
+        primaryColor: const Color(0xFF1565C0),
+        scaffoldBackgroundColor: const Color(0xFFF5F5F5),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF436EA0),
-          centerTitle: true,
+          backgroundColor: Color(0xFF1565C0),
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(22)),
           ),
-          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+          elevation: 0,
+        ),
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: const Color(0xFF1565C0),
+          secondary: const Color(0xFF26C6DA),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFF1565C0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFF1565C0)),
+          ),
         ),
       ),
       initialRoute: HomeScreen.routeName,

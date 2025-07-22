@@ -78,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const DrawerHeader(
-                decoration: BoxDecoration(color: Color(0xFF436EA0)),
-                child: Center(child: Text("New App!")),
+                decoration: BoxDecoration(color: Color(0xFF1565C0)),
+                child: Center(child: Text("News App!", style: TextStyle(color: Colors.white))),
               ),
               buildDrawerRow(Icons.list, "Categories", () {
                 currentTab = CategoriesTab(onCategoryClick: onCategoryClick);
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       List<Source> sources = await ApiManager.getSources(categoryDm.id);
       if (sources.isNotEmpty) {
-        currentSourceId = sources[0].id ?? "";
+        currentSourceId = sources[0].id!;
         isNewsTabActive = true;
         currentTab = BlocProvider(
           create: (_) => SourcesCubit()..loadSources(categoryDm.id),
@@ -120,15 +120,15 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget buildDrawerRow(IconData iconData, String title, Function onClick) {
+  Widget buildDrawerRow(IconData iconData, String title, Function() onClick) {
     return InkWell(
-      onTap: () => onClick(),
+      onTap: onClick,
       child: Row(
         children: [
           const SizedBox(width: 8),
-          Icon(iconData),
+          Icon(iconData, color: const Color(0xFF1565C0)),
           const SizedBox(width: 4),
-          Text(title),
+          Text(title, style: const TextStyle(color: Color(0xFF333333))),
         ],
       ),
     );
@@ -146,6 +146,7 @@ class NewsDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) => IconButton(
     icon: const Icon(Icons.arrow_back),
+    color: const Color(0xFF1565C0),
     onPressed: () => close(context, null),
   );
 
@@ -172,6 +173,12 @@ class NewsDelegate extends SearchDelegate {
       ),
     );
   }
+
+  @override
+  String get searchFieldLabel => "Search articles";
+
+  @override
+  TextStyle? get searchFieldStyle => const TextStyle(color: Color(0xFF333333));
 
   @override
   Widget buildSuggestions(BuildContext context) => const SizedBox();

@@ -9,19 +9,29 @@ class CategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: categoryDM.backgroundColor,
+        color: const Color(0xFF1565C0),
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
-          bottomLeft: categoryDM.isLeftSided ? Radius.zero : Radius.circular(16),
-          bottomRight: !categoryDM.isLeftSided ? Radius.zero : Radius.circular(16),
+          topLeft: const Radius.circular(16),
+          topRight: const Radius.circular(16),
+          bottomLeft: categoryDM.isLeftSided ? Radius.zero : const Radius.circular(16),
+          bottomRight: !categoryDM.isLeftSided ? Radius.zero : const Radius.circular(16),
         ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Image.asset(categoryDM.imagePath),
-          Text(categoryDM.title),
+          Expanded(child: Image.asset(categoryDM.imagePath, fit: BoxFit.cover)),
+          const SizedBox(height: 18),
+          Text(
+            categoryDM.title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 18),
         ],
       ),
     );

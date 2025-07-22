@@ -82,7 +82,7 @@ class DetailsScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(
                         context,
-                        WebviewScreen.route, // ✅ التصحيح هنا
+                        WebviewScreen.route,
                         arguments: args.url!,
                       );
                     },

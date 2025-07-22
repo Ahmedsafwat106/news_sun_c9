@@ -16,6 +16,8 @@ class CategoriesTab extends StatelessWidget {
             itemCount: categories.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+              mainAxisSpacing: 55,
+              crossAxisSpacing: 10,
             ),
             itemBuilder: (context, index) {
               return InkWell(

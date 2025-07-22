@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_sun_c9/data/model/ArticlesResponse.dart';
+import 'package:news_sun_c9/ui/screens/webviewscreen/webview_screen.dart';
 
 class DetailsScreen extends StatelessWidget {
   static const String route = "DetailsScreen";
@@ -79,8 +80,11 @@ class DetailsScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "/WebviewScreen",
-                          arguments: args.url!);
+                      Navigator.pushNamed(
+                        context,
+                        WebviewScreen.route, // ✅ التصحيح هنا
+                        arguments: args.url!,
+                      );
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

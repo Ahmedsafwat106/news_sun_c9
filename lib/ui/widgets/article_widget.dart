@@ -11,39 +11,39 @@ class ArticleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.pushNamed(context,DetailsScreen.route,arguments: article);
+      onTap: () {
+        Navigator.pushNamed(context, DetailsScreen.route, arguments: article);
       },
       child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (article.urlToImage != null)
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: CachedNetworkImage(
-                imageUrl: article.urlToImage!,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-                placeholder: (context, url) =>
-                const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                const Center(child: Icon(Icons.error)),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (article.urlToImage != null)
+            Container(
+              margin: const EdgeInsets.all(8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: article.urlToImage!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: 200,
+                  placeholder: (context, url) =>
+                  const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                  const Center(child: Icon(Icons.error)),
+                ),
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(article.title ?? ""),
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(article.title ?? ""),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-          child: Text(article.publishedAt ?? ""),
-        ),
-      ],
-    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+            child: Text(article.publishedAt ?? ""),
+          ),
+        ],
+      ),
     );
   }
 }

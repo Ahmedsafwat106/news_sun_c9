@@ -22,7 +22,16 @@ class CategoryWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(child: Image.asset(categoryDM.imagePath, fit: BoxFit.cover)),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                categoryDM.imagePath,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+          ),
           const SizedBox(height: 18),
           Text(
             categoryDM.title,
